@@ -5,13 +5,28 @@ file.
 """
 
 import argparse
+import os
 import shlex
 import sys
-from pathlib import Path
 
 import platformdirs
 
 PLACEHOLDER = '#FROM_FILE_PATH#'
+
+
+# Get program name. This function is copied (but very modified) from argparse 3.14.0
+def _prog_name():
+    try:
+        modspec = sys.modules['__main__'].__spec__
+    except (KeyError, AttributeError):
+        # possibly PYTHONSTARTUP or -X presite or other weird edge case
+        # no good answer here, so fall back to the default
+        modspec = None
+
+    if not modspec or modspec.name == '__main__':
+        return os.path.basename(sys.argv[0])
+
+    return modspec.name.removesuffix('.__main__')
 
 
 class ArgumentParser(argparse.ArgumentParser):
@@ -29,7 +44,7 @@ class ArgumentParser(argparse.ArgumentParser):
             # from_file = '': Do not use a "from file".
             # from_file = None: Create default "from file" path.
             if (from_file := kwargs.pop('from_file', None)) is None:
-                from_file = Path(sys.argv[0]).stem + '-flags.conf'
+                from_file = _prog_name() + '-flags.conf'
 
             if from_file:
                 from_file_path = platformdirs.user_config_path(from_file)
