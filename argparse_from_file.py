@@ -23,11 +23,10 @@ def _prog_name():
         # no good answer here, so fall back to the default
         modspec = None
 
-    if not modspec or modspec.name == '__main__':
+    if not modspec or (name := modspec.name) == '__main__':
         return os.path.basename(sys.argv[0])
 
-    return modspec.name.removesuffix('.__main__')
-
+    return name[:-9] if name.endswith('.__main__') else name
 
 class ArgumentParser(argparse.ArgumentParser):
     _top = True
