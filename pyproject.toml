@@ -37,5 +37,4 @@ version_scheme = "post-release"
 quote-style = "single"
 skip-magic-trailing-comma = true
 
-
 # vim:se sw=2:

@@ -73,7 +73,7 @@ Example `~/.config/myprog-flags.conf`:
 
 `argparse-from-file` automatically adds an `epilog` to the help message
 indicating the configuration file path. If you instead provide a custom `epilog`
-(or `usage` or `description`), you can embed the `#FROM_FILE_PATH#` placeholder,
+(or `usage` or `description`), you can embed a `#FROM_FILE_PATH#` placeholder,
 and it will be replaced with the actual path used.
 
 ## Example
