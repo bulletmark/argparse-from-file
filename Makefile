@@ -1,5 +1,6 @@
 NAME = $(shell basename $(CURDIR))
-PYFILES = $(subst -,_,$(NAME)).py
+PYNAME =  $(subst -,_,$(NAME))
+PYFILES = $(wildcard $(PYNAME)/[^_]*.py)
 
 check:
 	ruff check $(PYFILES)
@@ -19,4 +20,4 @@ format::
 	ruff check --select I --fix $(PYFILES) && ruff format $(PYFILES)
 
 clean::
-	@rm -vrf *.egg-info build/ dist/ __pycache__/
+	@rm -vrf *.egg-info build/ dist/ __pycache__/ */__pycache__

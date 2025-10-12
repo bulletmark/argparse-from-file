@@ -4,10 +4,10 @@ argument list with default options and arguments read from a user configuration
 file.
 """
 
-import argparse as _argparse
-import os as _os
-import shlex as _shlex
-import sys as _sys
+import argparse
+import os
+import shlex
+import sys
 
 import platformdirs
 
@@ -17,19 +17,19 @@ PLACEHOLDER = '#FROM_FILE_PATH#'
 # Get program name. This function is copied (but very modified) from argparse 3.14.0
 def _prog_name() -> str:
     try:
-        modspec = _sys.modules['__main__'].__spec__
+        modspec = sys.modules['__main__'].__spec__
     except (KeyError, AttributeError):
         # possibly PYTHONSTARTUP or -X presite or other weird edge case
         # no good answer here, so fall back to the default
         modspec = None
 
     if not modspec or (name := modspec.name) == '__main__':
-        return _os.path.basename(_sys.argv[0])
+        return os.path.basename(sys.argv[0])
 
     return name[:-9] if name.endswith('.__main__') else name
 
 
-class ArgumentParser(_argparse.ArgumentParser):
+class ArgumentParser(argparse.ArgumentParser):
     _top = True
 
     def __init__(self, *args, **kwargs):
@@ -85,12 +85,7 @@ class ArgumentParser(_argparse.ArgumentParser):
         if args is None and self._argv:
             # Combine args from file and command line, to be parsed
             argstr = ' '.join(self._argv).strip()
-            args = _shlex.split(argstr) + _sys.argv[1:]
+            args = shlex.split(argstr) + sys.argv[1:]
             self._argv.clear()
 
         return super().parse_args(args, namespace)
-
-
-def __getattr__(name: str):
-    "Proxy all other attributes from argparse module."
-    return getattr(_argparse, name)
