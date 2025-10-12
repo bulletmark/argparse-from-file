@@ -35,9 +35,9 @@ class ArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
         self._argv = []
 
-        # Only set up "from file" stuff once, for the top-level
-        if ArgumentParser._top:
-            ArgumentParser._top = False
+        # Only set up "from file" stuff once, for the top-level/main ArgumentParser()
+        if __class__._top:
+            __class__._top = False
 
             # from_file = 'path-to/file': Use this as "from file" name/path. If
             #   relative then wrt platform specific user config dir.
