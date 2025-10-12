@@ -44,11 +44,11 @@ which is the only addition to the standard
 [`ArgumentParser()`][argparser] API:
 
 ```python
-# Use a specific file path
-parser = argparse.ArgumentParser(from_file='/path/to/my/config', ..)
+# Use a specific () file path
+parser = argparse.ArgumentParser(from_file='/path/to/myprog.conf', ..)
 
 # Use a file relative to the user's config directory
-parser = argparse.ArgumentParser(from_file='my-app.conf', ..)
+parser = argparse.ArgumentParser(from_file='myprog.conf', ..)
 ```
 
 The `from_file` argument accepts a string or a [`pathlib.Path`][pathlib].
@@ -63,10 +63,11 @@ clarity.
 
 Example `~/.config/myprog-flags.conf`:
 ```
---verbose
-
 # Always run with foo set to 123
 --foo 123
+
+# Default to verbose output
+--verbose
 ```
 
 ## Customizing the Help Message

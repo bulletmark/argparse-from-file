@@ -15,7 +15,7 @@ PLACEHOLDER = '#FROM_FILE_PATH#'
 
 
 # Get program name. This function is copied (but very modified) from argparse 3.14.0
-def _prog_name():
+def _prog_name() -> str:
     try:
         modspec = sys.modules['__main__'].__spec__
     except (KeyError, AttributeError):
@@ -27,6 +27,7 @@ def _prog_name():
         return os.path.basename(sys.argv[0])
 
     return name[:-9] if name.endswith('.__main__') else name
+
 
 class ArgumentParser(argparse.ArgumentParser):
     _top = True
@@ -78,7 +79,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
             self.from_file_path = from_file_path
 
-        return super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def parse_args(self, args=None, namespace=None):  # type: ignore[override]
         if args is None and self._argv:
