@@ -32,7 +32,7 @@ def _prog_name() -> str:
 class ArgumentParser(argparse.ArgumentParser):
     _top = True
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, from_file=None, **kwargs):
         self._argv = []
 
         # Only set up "from file" stuff once, for the top-level/main ArgumentParser()
@@ -43,7 +43,7 @@ class ArgumentParser(argparse.ArgumentParser):
             #   relative then wrt platform specific user config dir.
             # from_file = '': Do not use a "from file".
             # from_file = None: Create default "from file" path.
-            if (from_file := kwargs.pop('from_file', None)) is None:
+            if from_file is None:
                 from_file = _prog_name() + '-flags.conf'
 
             if from_file:
