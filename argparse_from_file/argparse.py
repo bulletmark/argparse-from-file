@@ -33,26 +33,28 @@ class ArgumentParser(argparse.ArgumentParser):
     _top = True
 
     def __init__(self, *args, from_file=None, **kwargs):
-        self._argv = []
+        self.from_file_path = None
+        self._argv = None
 
         # Only set up "from file" stuff once, for the top-level/main ArgumentParser()
         if __class__._top:
             __class__._top = False
 
+            # from_file = None: Create default "from file" path.
             # from_file = 'path-to/file': Use this as "from file" name/path. If
             #   relative then wrt platform specific user config dir.
             # from_file = '': Do not use a "from file".
-            # from_file = None: Create default "from file" path.
             if from_file is None:
                 from_file = _prog_name() + '-flags.conf'
 
             if from_file:
-                from_file_path = platformdirs.user_config_path(from_file)
-                from_file_path_str = str(from_file_path)
+                self.from_file_path = platformdirs.user_config_path(from_file)
+                from_file_path_str = str(self.from_file_path)
+
+                # epilog = None: create default epilog with "from file" path.
                 # epilog = 'text string': Set this as epilog, replacing any
                 #   PLACEHOLDER with the above determined "from file" path.
                 # epilog = '': Do not set an epilog.
-                # epilog = None: create default epilog with "from file" path.
                 if (epilog := kwargs.pop('epilog', None)) is None:
                     epilog = f'Note you can set default starting options in {from_file_path_str}.'
                 else:
@@ -67,17 +69,13 @@ class ArgumentParser(argparse.ArgumentParser):
                         kwargs[kw] = v.replace(PLACEHOLDER, from_file_path_str)
 
                 # Create list of default args from user file.
-                if from_file_path.is_file():
-                    with from_file_path.open() as fp:
-                        self._argv.extend(
+                if self.from_file_path.is_file():
+                    with self.from_file_path.open() as fp:
+                        self._argv = [
                             ln
                             for line in fp
                             if (ln := line.strip()) and not ln.startswith('#')
-                        )
-            else:
-                from_file_path = None
-
-            self.from_file_path = from_file_path
+                        ]
 
         super().__init__(*args, **kwargs)
 
