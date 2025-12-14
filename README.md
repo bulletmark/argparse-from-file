@@ -108,7 +108,7 @@ options:
   -h, --help  show this help message and exit
   --foo FOO   foo help
 
-Note you can set default starting options in /home/user/.config/myprog-flags.conf.
+Note you can set default starting options in ~/.config/myprog-flags.conf.
 ```
 
 ## Installation
