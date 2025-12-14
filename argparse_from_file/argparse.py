@@ -8,14 +8,16 @@ import argparse
 import os
 import shlex
 import sys
+from pathlib import Path
 
 import platformdirs
 
 PLACEHOLDER = '#FROM_FILE_PATH#'
 
 
-# Get program name. This function is copied (but very modified) from argparse 3.14.0
+# This function is copied (but very modified) from argparse 3.14.0
 def _prog_name() -> str:
+    "Return the name of the program"
     try:
         modspec = sys.modules['__main__'].__spec__
     except (KeyError, AttributeError):
@@ -29,6 +31,16 @@ def _prog_name() -> str:
     return name[:-9] if name.endswith('.__main__') else name
 
 
+def _unexpanduser(path: Path) -> Path:
+    "Return path name, with $HOME replaced by ~ (opposite of Path.expanduser())"
+    home = Path.home()
+
+    if path.parts[: len(home.parts)] == home.parts:
+        return Path('~', *path.parts[len(home.parts) :])
+
+    return path
+
+
 class ArgumentParser(argparse.ArgumentParser):
     _top = True
 
@@ -37,8 +49,8 @@ class ArgumentParser(argparse.ArgumentParser):
         self._argv = None
 
         # Only set up "from file" stuff once, for the top-level/main ArgumentParser()
-        if __class__._top:
-            __class__._top = False
+        if __class__._top:  # type: ignore[attr-defined]
+            __class__._top = False  # type: ignore[attr-defined]
 
             # from_file = None: Create default "from file" path.
             # from_file = 'path-to/file': Use this as "from file" name/path. If
@@ -49,7 +61,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
             if from_file:
                 self.from_file_path = platformdirs.user_config_path(from_file)
-                from_file_path_str = str(self.from_file_path)
+                from_file_path_str = str(_unexpanduser(self.from_file_path))
 
                 # epilog = None: create default epilog with "from file" path.
                 # epilog = 'text string': Set this as epilog, replacing any
