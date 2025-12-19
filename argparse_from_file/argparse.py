@@ -45,8 +45,7 @@ class ArgumentParser(argparse.ArgumentParser):
     _top = True
 
     def __init__(self, *args, from_file=None, **kwargs):
-        self.from_file_path = None
-        self._argv = None
+        self._argv_from_file = None
 
         # Only set up "from file" stuff once, for the top-level/main ArgumentParser()
         if __class__._top:  # type: ignore[attr-defined]
@@ -60,17 +59,19 @@ class ArgumentParser(argparse.ArgumentParser):
                 from_file = _prog_name() + '-flags.conf'
 
             if from_file:
-                self.from_file_path = platformdirs.user_config_path(from_file)
-                from_file_path_str = str(_unexpanduser(self.from_file_path))
+                from_file_path = platformdirs.user_config_path(from_file)
+                from_file_str = str(_unexpanduser(from_file_path))
 
                 # epilog = None: create default epilog with "from file" path.
                 # epilog = 'text string': Set this as epilog, replacing any
                 #   PLACEHOLDER with the above determined "from file" path.
                 # epilog = '': Do not set an epilog.
                 if (epilog := kwargs.pop('epilog', None)) is None:
-                    epilog = f'Note you can set default starting options in {from_file_path_str}.'
+                    epilog = (
+                        f'Note you can set default starting options in {from_file_str}.'
+                    )
                 else:
-                    epilog = epilog.replace(PLACEHOLDER, from_file_path_str)
+                    epilog = epilog.replace(PLACEHOLDER, from_file_str)
 
                 if epilog:
                     kwargs['epilog'] = epilog
@@ -78,12 +79,12 @@ class ArgumentParser(argparse.ArgumentParser):
                 # Also replace PLACEHOLDER in usage and description.
                 for kw in 'usage', 'description':
                     if v := kwargs.get(kw):
-                        kwargs[kw] = v.replace(PLACEHOLDER, from_file_path_str)
+                        kwargs[kw] = v.replace(PLACEHOLDER, from_file_str)
 
                 # Create list of default args from user file.
-                if self.from_file_path.is_file():
-                    with self.from_file_path.open() as fp:
-                        self._argv = [
+                if from_file_path.is_file():
+                    with from_file_path.open() as fp:
+                        self._argv_from_file = [
                             ln
                             for line in fp
                             if (ln := line.strip()) and not ln.startswith('#')
@@ -92,10 +93,10 @@ class ArgumentParser(argparse.ArgumentParser):
         super().__init__(*args, **kwargs)
 
     def parse_args(self, args=None, namespace=None):  # type: ignore[override]
-        if args is None and self._argv:
+        if args is None and self._argv_from_file:
             # Combine args from file and command line, to be parsed
-            argstr = ' '.join(self._argv).strip()
+            argstr = ' '.join(self._argv_from_file).strip()
             args = shlex.split(argstr) + sys.argv[1:]
-            self._argv.clear()
+            self._argv_from_file = None
 
         return super().parse_args(args, namespace)
