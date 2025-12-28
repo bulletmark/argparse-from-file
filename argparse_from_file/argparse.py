@@ -45,6 +45,7 @@ class ArgumentParser(argparse.ArgumentParser):
     _top = True
 
     def __init__(self, *args, from_file=None, **kwargs):
+        self.from_file_path = None
         self._argv_from_file = None
 
         # Only set up "from file" stuff once, for the top-level/main ArgumentParser()
@@ -59,8 +60,8 @@ class ArgumentParser(argparse.ArgumentParser):
                 from_file = _prog_name() + '-flags.conf'
 
             if from_file:
-                from_file_path = platformdirs.user_config_path(from_file)
-                from_file_str = str(_unexpanduser(from_file_path))
+                self.from_file_path = platformdirs.user_config_path(from_file)
+                from_file_str = str(_unexpanduser(self.from_file_path))
 
                 # epilog = None: create default epilog with "from file" path.
                 # epilog = 'text string': Set this as epilog, replacing any
@@ -82,8 +83,8 @@ class ArgumentParser(argparse.ArgumentParser):
                         kwargs[kw] = v.replace(PLACEHOLDER, from_file_str)
 
                 # Create list of default args from user file.
-                if from_file_path.is_file():
-                    with from_file_path.open() as fp:
+                if self.from_file_path.is_file():
+                    with self.from_file_path.open() as fp:
                         self._argv_from_file = [
                             ln
                             for line in fp
