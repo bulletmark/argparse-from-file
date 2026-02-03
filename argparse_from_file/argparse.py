@@ -31,10 +31,8 @@ def _prog_name() -> str:
     return name[:-9] if name.endswith('.__main__') else name
 
 
-def _unexpanduser(path: Path) -> Path:
+def _unexpanduser(path: Path, *, home=Path.home()) -> Path:
     "Return path name, with $HOME replaced by ~ (opposite of Path.expanduser())"
-    home = Path.home()
-
     if path.parts[: len(home.parts)] == home.parts:
         return Path('~', *path.parts[len(home.parts) :])
 
@@ -93,7 +91,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
         super().__init__(*args, **kwargs)
 
-    def parse_args(self, args=None, namespace=None):  # type: ignore[override]
+    def parse_args(self, args=None, namespace=None):
         if args is None and self._argv_from_file:
             # Combine args from file and command line, to be parsed
             argstr = ' '.join(self._argv_from_file).strip()
