@@ -2,7 +2,7 @@ PYFILES := `echo */[^_]*.py`
 
 check:
   ruff check {{PYFILES}}
-  ty check --python /usr/bin/python3 {{PYFILES}}
+  ty check {{PYFILES}}
   vermin -vv --no-tips -i {{PYFILES}}
   md-link-checker
 

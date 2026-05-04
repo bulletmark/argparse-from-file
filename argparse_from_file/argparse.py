@@ -5,7 +5,6 @@ file.
 """
 
 import argparse
-import os
 import shlex
 import sys
 from pathlib import Path
@@ -26,7 +25,7 @@ def _prog_name() -> str:
         modspec = None
 
     if not modspec or (name := modspec.name) == '__main__':
-        return os.path.basename(sys.argv[0])
+        return Path(sys.argv[0]).name
 
     return name[:-9] if name.endswith('.__main__') else name
 
@@ -47,15 +46,15 @@ class ArgumentParser(argparse.ArgumentParser):
         self._argv_from_file = None
 
         # Only set up "from file" stuff once, for the top-level/main ArgumentParser()
-        if __class__._top:  # type: ignore[attr-defined]
-            __class__._top = False  # type: ignore[attr-defined]
+        if self.__class__._top:
+            self.__class__._top = False
 
             # from_file = None: Create default "from file" path.
             # from_file = 'path-to/file': Use this as "from file" name/path. If
             #   relative then wrt platform specific user config dir.
             # from_file = '': Do not use a "from file".
             if from_file is None:
-                from_file = _prog_name() + '-flags.conf'
+                from_file = (kwargs.get('prog') or _prog_name()) + '-flags.conf'
 
             if from_file:
                 self.from_file_path = platformdirs.user_config_path(from_file)
