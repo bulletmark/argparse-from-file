@@ -1,2 +1,2 @@
-from argparse import *  # type: ignore
+from argparse import *
 from .argparse import ArgumentParser as ArgumentParser
