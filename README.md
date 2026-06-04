@@ -19,8 +19,6 @@ https://github.com/bulletmark/argparse-from-file.
   `<program_name>-flags.conf` in the user's configuration directory (e.g.,
   `~/.config/` on Linux). The exact path is determined using the
   [`platformdirs`][platformdirs] library to respect OS conventions.
-* **Custom configuration file:** Specify a custom file path with the
-  `from_file` argument to [`ArgumentParser()`][argparser].
 * **Simple file format:** The configuration file is a simple text file with
   options specified on one or more lines. Blank lines and lines starting with
   `#` are ignored.
