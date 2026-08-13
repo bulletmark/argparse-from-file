@@ -9,9 +9,6 @@ readme = "README.md"
 license = "GPL-3.0-or-later"
 requires-python = ">=3.8"
 keywords = ["argparse", "ConfigArgParse"]
-classifiers = [
-  "Programming Language :: Python :: 3",
-]
 dynamic = ["version"]
 dependencies = [
   "platformdirs",
@@ -29,6 +26,5 @@ version_scheme = "post-release"
 
 [tool.ruff.format]
 quote-style = "single"
-skip-magic-trailing-comma = true
 
 # vim:se sw=2:

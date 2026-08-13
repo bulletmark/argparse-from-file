@@ -30,8 +30,9 @@ def _prog_name() -> str:
     return name[:-9] if name.endswith('.__main__') else name
 
 
-def _unexpanduser(path: Path, *, home=Path.home()) -> Path:
+def _unexpanduser(path: Path) -> Path:
     "Return path name, with $HOME replaced by ~ (opposite of Path.expanduser())"
+    home = Path.home()
     if path.parts[: len(home.parts)] == home.parts:
         return Path('~', *path.parts[len(home.parts) :])
 
