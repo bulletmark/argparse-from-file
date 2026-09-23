@@ -1,4 +1,4 @@
-PYFILES := `echo */[^_]*.py`
+PYFILES := `echo *.py */[^_]*.py`
 
 check:
   ruff check {{PYFILES}}
