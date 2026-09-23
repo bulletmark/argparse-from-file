@@ -31,10 +31,11 @@ def _prog_name() -> str:
 
 
 def _unexpanduser(path: Path) -> Path:
-    "Return path name, with $HOME replaced by ~ (opposite of Path.expanduser())"
-    home = Path.home()
-    if path.parts[: len(home.parts)] == home.parts:
-        return Path('~', *path.parts[len(home.parts) :])
+    "Return path name, with $HOME replaced by ~, i.e. opposite of Path.expanduser() for current user"
+    startlen = len(hparts := path.home().parts)
+    parts = path.parts
+    if parts[:startlen] == hparts:
+        path = Path('~', *parts[startlen:])
 
     return path
 
