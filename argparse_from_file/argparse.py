@@ -59,7 +59,10 @@ class ArgumentParser(argparse.ArgumentParser):
                 from_file = (kwargs.get('prog') or _prog_name()) + '-flags.conf'
 
             if from_file:
-                self.from_file_path = platformdirs.user_config_path(from_file)
+                self.from_file_path = Path(from_file).expanduser()
+                if not self.from_file_path.is_absolute():
+                    self.from_file_path = platformdirs.user_config_path(from_file)
+
                 from_file_str = str(_unexpanduser(self.from_file_path))
 
                 # epilog = None: create default epilog with "from file" path.
