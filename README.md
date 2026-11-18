@@ -53,6 +53,17 @@ The `from_file` argument accepts a string or a [`pathlib.Path`][pathlib].
 Relative paths are resolved relative to the user's configuration directory as
 determined by `platformdirs`.
 
+There is also an optional `from_file_only` boolean argument to
+`ArgumentParser()` which, if set to `True`, will cause the parser to read
+arguments only from the configuration file and ignore any command line
+arguments. This can be useful for use cases where the program is being run as a
+module, such as a wsgi or asgi app, or in another containerized environment
+where command line arguments are not available.
+
+```python
+Relative paths are resolved relative to the user's configuration directory as
+determined by `platformdirs`.
+
 ## Configuration File Format
 
 Arguments in the configuration file are best specified one per line so they can

@@ -43,9 +43,10 @@ def _unexpanduser(path: Path) -> Path:
 class ArgumentParser(argparse.ArgumentParser):
     _top = True
 
-    def __init__(self, *args, from_file=None, **kwargs):
+    def __init__(self, *args, from_file=None, from_file_only=False, **kwargs):
         self.from_file_path = None
         self._argv_from_file = None
+        self._from_file_only = from_file_only
 
         # Only set up "from file" stuff once, for the top-level/main ArgumentParser()
         if self.__class__._top:
@@ -98,8 +99,9 @@ class ArgumentParser(argparse.ArgumentParser):
     def parse_args(self, args=None, namespace=None):
         if args is None and self._argv_from_file:
             # Combine args from file and command line, to be parsed
-            argstr = ' '.join(self._argv_from_file).strip()
-            args = shlex.split(argstr) + sys.argv[1:]
+            args = shlex.split(' '.join(self._argv_from_file).strip())
+            if not self._from_file_only:
+                args += sys.argv[1:]
             self._argv_from_file = None
 
         return super().parse_args(args, namespace)
