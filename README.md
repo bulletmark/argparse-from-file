@@ -60,7 +60,6 @@ arguments. This can be useful for use cases where the program is being run as a
 module, such as a wsgi or asgi app, or in another containerized environment
 where command line arguments are not available.
 
-```python
 Relative paths are resolved relative to the user's configuration directory as
 determined by `platformdirs`.
 

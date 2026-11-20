@@ -1,10 +1,15 @@
 PYFILES := `echo *.py */[^_]*.py`
 
+all: check test
+
 check:
   ruff check {{PYFILES}}
   ty check {{PYFILES}}
   vermin -vv --no-tips -i {{PYFILES}}
   md-link-checker
+
+test:
+  python3 -m unittest -v test_argparse_from_file
 
 build:
   rm -rf dist
